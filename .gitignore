@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Native build output (Expo prebuild)
+ios/
+android/
+
+# Logs
+*.log
+npm-debug.*
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Codebuff local metadata
+.freebuff/
+
+# TypeScript incremental builds
+*.tsbuildinfo

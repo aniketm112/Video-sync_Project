@@ -1,0 +1,117 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid",
+        "profile": {
+          ".validate": "newData.hasChildren(['username', 'email', 'createdAt'])",
+          "username": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 60"
+          },
+          "email": {
+            ".validate": "newData.isString() && newData.val().length <= 120"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "latest": {
+          ".validate": "newData.hasChildren(['url', 'platform', 'updatedAt'])",
+          "platform": {
+            ".validate": "newData.isString() && newData.val().length <= 40"
+          },
+          "url": {
+            ".validate": "newData.isString() && newData.val().length <= 2048 && newData.val().beginsWith('http')"
+          },
+          "title": {
+            ".validate": "newData.isString() && newData.val().length <= 300"
+          },
+          "thumbnail": {
+            ".validate": "newData.isString() && newData.val().length <= 2048"
+          },
+          "time": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 600000"
+          },
+          "deviceId": {
+            ".validate": "newData.isString() && newData.val().length <= 64"
+          },
+          "deviceName": {
+            ".validate": "newData.isString() && newData.val().length <= 80"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "sessions": {
+          "$session": {
+            ".validate": "newData.hasChildren(['url', 'platform', 'updatedAt'])",
+            "platform": {
+              ".validate": "newData.isString() && newData.val().length <= 40"
+            },
+            "url": {
+              ".validate": "newData.isString() && newData.val().length <= 2048 && newData.val().beginsWith('http')"
+            },
+            "title": {
+              ".validate": "newData.isString() && newData.val().length <= 300"
+            },
+            "thumbnail": {
+              ".validate": "newData.isString() && newData.val().length <= 2048"
+            },
+            "time": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 600000"
+            },
+            "deviceId": {
+              ".validate": "newData.isString() && newData.val().length <= 64"
+            },
+            "deviceName": {
+              ".validate": "newData.isString() && newData.val().length <= 80"
+            },
+            "createdAt": {
+              ".validate": "newData.isNumber()"
+            },
+            "updatedAt": {
+              ".validate": "newData.isNumber()"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "devices": {
+          "$device": {
+            ".validate": "newData.hasChildren(['name', 'lastSeen'])",
+            "name": {
+              ".validate": "newData.isString() && newData.val().length <= 80"
+            },
+            "lastSeen": {
+              ".validate": "newData.isNumber()"
+            },
+            "createdAt": {
+              ".validate": "newData.isNumber()"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}

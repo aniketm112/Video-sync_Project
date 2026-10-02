@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Video Sync</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --surface: #101a2c;
+      --surface-raised: #16233a;
+      --border: #1e2a3f;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --faint: #64748b;
+      --accent: #38bdf8;
+      --success: #22c55e;
+      --danger: #f87171;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      width: 380px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .view { display: none; padding: 16px; }
+    .view.active { display: block; }
+
+    /* ---------- Brand ---------- */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .brand-logo {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #06283b;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .brand-name { font-size: 16px; font-weight: 700; letter-spacing: 0.2px; }
+
+    /* ---------- Auth ---------- */
+    .auth-tabs {
+      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+      margin-bottom: 16px;
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 7px 0;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .auth-tab.active { background: var(--surface-raised); color: var(--text); }
+
+    .field { margin-bottom: 12px; }
+    .field label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .field input {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font: inherit;
+      outline: none;
+    }
+    .field input:focus { border-color: var(--accent); }
+
+    .btn {
+      width: 100%;
+      padding: 11px;
+      border: none;
+      border-radius: 10px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s ease;
+    }
+    .btn:disabled { opacity: 0.5; cursor: default; }
+    .btn-primary { background: var(--accent); color: #06283b; }
+    .btn-primary:hover:not(:disabled) { opacity: 0.9; }
+    .btn-push { background: var(--success); color: #052e12; padding: 13px; font-size: 14.5px; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--border);
+      font-weight: 600;
+      padding: 8px;
+    }
+    .btn-ghost:hover { border-color: var(--danger); }
+
+    .error {
+      display: none;
+      color: var(--danger);
+      font-size: 12.5px;
+      margin: 10px 0 0;
+    }
+    .error.visible { display: block; }
+
+    .auth-footnote {
+      margin-top: 14px;
+      color: var(--faint);
+      font-size: 11.5px;
+      text-align: center;
+    }
+
+    /* ---------- Main ---------- */
+    .user-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 17px;
+      background: var(--accent);
+      color: #06283b;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .user-meta { flex: 1; min-width: 0; }
+    .user-name { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-email {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .logout {
+      border: none;
+      background: transparent;
+      color: var(--faint);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+    }
+    .logout:hover { color: var(--danger); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .card-thumb {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--surface-raised);
+      object-fit: cover;
+      display: none;
+    }
+    .card-thumb.visible { display: block; }
+    .card-thumb-fallback {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--surface-raised);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: var(--faint);
+      font-size: 26px;
+    }
+    .card-thumb-fallback.visible { display: flex; }
+    .card-body { padding: 12px 14px 14px; }
+    .card-label {
+      color: var(--accent);
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .card-title {
+      font-weight: 700;
+      font-size: 15px;
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+    .card-meta { color: var(--muted); font-size: 12.5px; }
+    .card-note {
+      color: var(--faint);
+      font-size: 11.5px;
+      margin-top: 8px;
+      display: none;
+    }
+    .card-note.visible { display: block; }
+
+    .status {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .status.visible { display: flex; }
+    .status.ok { background: rgba(34, 197, 94, 0.12); color: var(--success); }
+    .status.err { background: rgba(248, 113, 113, 0.1); color: var(--danger); }
+
+    .push-wrap { margin-top: 14px; }
+
+    .footnote {
+      margin-top: 14px;
+      color: var(--faint);
+      font-size: 11px;
+      text-align: center;
+    }
+
+    /* ---------- Setup ---------- */
+    .setup-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .setup-card h2 { margin: 0 0 8px; font-size: 15px; }
+    .setup-card p { margin: 0 0 10px; color: var(--muted); font-size: 13px; }
+    code {
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 1px 5px;
+      font-size: 12px;
+      color: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Firebase not configured -->
+  <div class="view" id="setupView">
+    <div class="brand">
+      <div class="brand-logo">▶</div>
+      <div class="brand-name">Video Sync</div>
+    </div>
+    <div class="setup-card">
+      <h2>One step left</h2>
+      <p>This extension needs your Firebase Web API key.</p>
+      <p>
+        Open <code>config.js</code> in the extension folder and paste the
+        <code>apiKey</code> from your Firebase console
+        (<em>Project settings → Your apps → Web app</em>), then reload the
+        extension.
+      </p>
+    </div>
+  </div>
+
+  <!-- Not signed in -->
+  <div class="view" id="authView">
+    <div class="brand">
+      <div class="brand-logo">▶</div>
+      <div class="brand-name">Video Sync</div>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" type="button">Log in</button>
+      <button class="auth-tab" id="tabSignup" type="button">Sign up</button>
+    </div>
+
+    <div class="field" id="nameField" style="display: none">
+      <label for="nameInput">Name</label>
+      <input id="nameInput" type="text" placeholder="How should we greet you?" />
+    </div>
+    <div class="field">
+      <label for="emailInput">Email</label>
+      <input id="emailInput" type="email" placeholder="you@example.com" autocomplete="email" />
+    </div>
+    <div class="field">
+      <label for="passwordInput">Password</label>
+      <input id="passwordInput" type="password" placeholder="At least 8 characters" autocomplete="current-password" />
+    </div>
+    <div class="field" id="confirmField" style="display: none">
+      <label for="confirmInput">Confirm password</label>
+      <input id="confirmInput" type="password" placeholder="Repeat your password" autocomplete="new-password" />
+    </div>
+
+    <button class="btn btn-primary" id="authSubmit" type="button">Log in</button>
+    <p class="error" id="authError"></p>
+    <p class="auth-footnote">Your account is the same one used in the Video Sync app.</p>
+  </div>
+
+  <!-- Signed in -->
+  <div class="view" id="mainView">
+    <div class="user-row">
+      <div class="avatar" id="userAvatar">V</div>
+      <div class="user-meta">
+        <div class="user-name" id="userName">Viewer</div>
+        <div class="user-email" id="userEmail"></div>
+      </div>
+      <button class="logout" id="logoutBtn" type="button">Log out</button>
+    </div>
+
+    <div class="card">
+      <img class="card-thumb" id="cardThumb" alt="" />
+      <div class="card-thumb-fallback" id="cardThumbFallback">▶</div>
+      <div class="card-body">
+        <div class="card-label" id="cardLabel">Detected video</div>
+        <div class="card-title" id="cardTitle">Looking for a video…</div>
+        <div class="card-meta" id="cardMeta"></div>
+        <div class="card-note" id="cardNote">
+          This site can’t be opened at a timestamp — the video will open from
+          the start on your other device.
+        </div>
+      </div>
+    </div>
+
+    <div class="push-wrap">
+      <button class="btn btn-push" id="pushBtn" type="button" disabled>
+        PUSH VIDEO
+      </button>
+      <div class="status" id="status"></div>
+    </div>
+
+    <p class="footnote" id="mainFootnote">Videos sync to every device on your account.</p>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="lib/auth.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
