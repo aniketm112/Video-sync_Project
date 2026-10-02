@@ -31,3 +31,6 @@ Thumbs.db
 
 # TypeScript incremental builds
 *.tsbuildinfo
+
+# Local history backups
+*.bundle
