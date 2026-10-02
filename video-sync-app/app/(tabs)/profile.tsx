@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Redirect } from 'expo-router';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '@/lib/auth';
 import { subscribeDevices, type DeviceEntry } from '@/lib/db';
 import { formatMonthYear, timeAgo } from '@/lib/format';
@@ -8,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Brand } from '@/constants/theme';
 
 export default function Profile() {
-  const { user, profile, initializing, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const [devices, setDevices] = useState<Record<string, DeviceEntry>>({});
   const [signingOut, setSigningOut] = useState(false);
 
@@ -17,17 +16,8 @@ export default function Profile() {
     return subscribeDevices(user.uid, setDevices);
   }, [user]);
 
-  if (initializing) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={Brand.accent} />
-      </View>
-    );
-  }
-
-  if (!user) {
-    return <Redirect href="/" />;
-  }
+  // `user` is guaranteed by the root layout guard; keeps TS happy.
+  if (!user) return null;
 
   const deviceList = Object.entries(devices)
     .map(([id, d]) => ({ id, ...d }))
@@ -111,12 +101,6 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 64,
     paddingBottom: 40,
-  },
-  center: {
-    flex: 1,
-    backgroundColor: Brand.bg,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   title: {
     color: Brand.text,

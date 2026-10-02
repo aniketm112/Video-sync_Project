@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Redirect, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useAuth, friendlyAuthError } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { Brand } from '@/constants/theme';
 
 export default function SignUp() {
-  const { user, initializing, signUp } = useAuth();
+  const { signUp } = useAuth();
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -15,10 +15,6 @@ export default function SignUp() {
   const [confirm, setConfirm] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  if (user && !initializing) {
-    return <Redirect href="/(tabs)" />;
-  }
 
   const submit = async () => {
     const name = username.trim();

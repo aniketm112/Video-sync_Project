@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Image } from 'expo-image';
-import { ActivityIndicator, Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Redirect, useRouter } from 'expo-router';
+import { Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useAuth } from '@/lib/auth';
 import { subscribeHistory, subscribeLatest, type VideoSession } from '@/lib/db';
 import { continueUrl, platformLabel, supportsTimestampRestore } from '@/lib/platforms';
@@ -11,7 +11,7 @@ import { VideoCard } from '@/components/video-card';
 import { Brand } from '@/constants/theme';
 
 export default function Home() {
-  const { user, profile, initializing } = useAuth();
+  const { user, profile } = useAuth();
   const router = useRouter();
   const [latest, setLatest] = useState<VideoSession | null>(null);
   const [history, setHistory] = useState<VideoSession[]>([]);
@@ -31,17 +31,8 @@ export default function Home() {
     };
   }, [user]);
 
-  if (initializing) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={Brand.accent} />
-      </View>
-    );
-  }
-
-  if (!user) {
-    return <Redirect href="/" />;
-  }
+  // `user` is guaranteed by the root layout guard; keeps TS happy.
+  if (!user) return null;
 
   const firstName = profile?.username?.split(' ')[0] ?? 'there';
 
@@ -147,12 +138,6 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 64,
     paddingBottom: 40,
-  },
-  center: {
-    flex: 1,
-    backgroundColor: Brand.bg,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   header: {
     flexDirection: 'row',

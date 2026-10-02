@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Brand } from '@/constants/theme';
 
 export default function VideoDetails() {
-  const { user, initializing } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [session, setSession] = useState<VideoSession | null>(null);
@@ -31,7 +31,9 @@ export default function VideoDetails() {
     };
   }, [user, id]);
 
-  if (initializing || loading) {
+  if (!user) return null;
+
+  if (loading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color={Brand.accent} />

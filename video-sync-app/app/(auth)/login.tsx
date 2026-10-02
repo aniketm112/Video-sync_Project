@@ -1,22 +1,18 @@
 import { useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Redirect, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useAuth, friendlyAuthError } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { Brand } from '@/constants/theme';
 
 export default function Login() {
-  const { user, initializing, signIn, resetPassword } = useAuth();
+  const { signIn, resetPassword } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  if (user && !initializing) {
-    return <Redirect href="/(tabs)" />;
-  }
 
   const submit = async () => {
     if (!email.trim() || !password) {

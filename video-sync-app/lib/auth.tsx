@@ -58,6 +58,9 @@ export function friendlyAuthError(err: unknown): string {
       return 'Network error. Check your connection and try again.';
     case 'auth/operation-not-allowed':
       return 'Email/password sign-in is not enabled for this Firebase project yet.';
+    case 'auth/invalid-api-key':
+    case 'auth/api-key-not-valid':
+      return 'The Firebase API key is invalid. Check EXPO_PUBLIC_FIREBASE_API_KEY in video-sync-app/.env — paste the bare value with no quotes or commas, then restart the dev server.';
     default: {
       const message = err instanceof Error ? err.message : String(err);
       return message.replace(/^Firebase:\s*/i, '').replace(/\s*\(auth\/.*\)\.?$/i, '');

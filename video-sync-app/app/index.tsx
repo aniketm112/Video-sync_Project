@@ -1,5 +1,5 @@
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { Redirect, useRouter } from 'expo-router';
+import { StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Brand } from '@/constants/theme';
@@ -9,20 +9,8 @@ import { Brand } from '@/constants/theme';
  * explains what to configure when Firebase env vars are missing.
  */
 export default function Welcome() {
-  const { user, initializing, configured } = useAuth();
+  const { configured } = useAuth();
   const router = useRouter();
-
-  if (initializing) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={Brand.accent} />
-      </View>
-    );
-  }
-
-  if (user) {
-    return <Redirect href="/(tabs)" />;
-  }
 
   if (!configured) {
     return (
