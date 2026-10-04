@@ -1,18 +1,60 @@
 # Video Sync
 
-> Cross-device video handoff: push what you're watching — with your exact position — from your browser, and continue on any other device in one tap.
+> Cross-device video handoff: push what you're watching — with your exact position — from your browser, and continue on your phone in one tap.
 
-## The Problem
+**For Users:** install the Android app, install the Chrome extension, sign in with the same account on both — done. No servers to set up, no configuration files to edit.
 
-You're 32:47 into a video on your laptop. Later you want to finish it on your phone. Now you have to remember what it was, find it again, open the right one, and scrub to the right spot — especially annoying when history is off, you use different platform accounts per device, or the video is on an unfamiliar site.
+**For Developers:** everything you need to build Video Sync from source is in the [developer section](#for-developers--contributors) below.
 
-## The Solution
+---
 
-**Push Video → Sync → Continue Watching**
+## For Users
 
-1. While watching a video, click **PUSH VIDEO** in the Video Sync Chrome extension.
-2. The video's URL, title, thumbnail, platform, and your exact playback position sync to your account.
-3. Open Video Sync on any other device — the video is waiting under **Continue Watching**, one tap from resuming at the saved timestamp.
+Video Sync does one thing well: you're 32:47 into a video on your laptop, and later you finish it on your phone at exactly 32:47.
+
+The flow: **YouTube → Chrome extension → PUSH VIDEO → Video Sync app → Continue Watching**
+
+### 1. Download Video Sync
+
+Download the latest `Video-Sync.apk` from the project's [Releases page](https://github.com/aniketm112/Video-sync_Project/releases).
+
+### 2. Install the APK
+
+On your Android phone or tablet:
+
+1. Download the APK (or copy it over from your computer).
+2. Open the APK from your notification shade or file manager.
+3. If Android asks for permission to install apps from that source (your browser or file manager), tap **Allow** — this is normal for apps installed outside the Play Store.
+4. Tap **Install**, then **Open**.
+
+### 3. Create an account
+
+Open Video Sync and create an account with a **name, email, and password**. That's it — the app is already connected to the Video Sync backend. You never enter any server settings, keys, or configuration.
+
+Use the **same account on every device** — that's what keeps your videos in sync.
+
+### 4. Install the Chrome extension
+
+The Chrome extension is what pushes videos from YouTube (and other sites) to your account. It is not on the Chrome Web Store, so you install it directly:
+
+1. Download `Video-Sync-Extension.zip` from the same [Releases page](https://github.com/aniketm112/Video-sync_Project/releases) and unzip it.
+2. In Chrome, open `chrome://extensions`.
+3. Turn on **Developer mode** (top-right toggle).
+4. Click **Load unpacked** and select the unzipped folder.
+5. Pin the Video Sync icon to your toolbar.
+
+The released extension is pre-configured — just sign in with the same account you use in the app.
+
+### 5. Start syncing
+
+1. Open any YouTube video in Chrome and watch it for a bit.
+2. Click the Video Sync icon → check the detected video → click **PUSH VIDEO**.
+3. Open Video Sync on your phone — the video appears instantly under **Continue Watching**.
+4. Tap it — YouTube opens at your saved position.
+
+Everything you push syncs automatically to every device signed into your account. The app updates in real time; no refresh needed.
+
+---
 
 ## How It Works
 
@@ -27,7 +69,7 @@ flowchart LR
 ```
 
 - The **Chrome extension** detects the video you're watching (platform adapter system), authenticates with **Firebase Authentication**, and writes the session to **Firebase Realtime Database**.
-- The **app** (Expo / React Native — Android, iOS, web) subscribes to your data in real time, so pushed videos appear without a refresh.
+- The **Android app** (React Native) subscribes to your data in real time, so pushed videos appear without a refresh.
 - Your data lives under `users/{your-uid}/…` and the database security rules (`database.rules.json`) make every read and write accessible **only to your own account**.
 
 ## Features
@@ -44,6 +86,7 @@ flowchart LR
 - Generic HTML5 video detection on any website
 - Graceful loading, empty, and error states; friendly auth/API error messages
 - Locked-down Firebase security rules with per-field validation
+- Installable **Android APK** built from the committed native Gradle project
 
 ### In Progress
 
@@ -53,7 +96,7 @@ flowchart LR
 
 - More platform adapters (Netflix/Prime/Disney+ require DRM-locked players — see Limitations)
 - "Mark as watched" / session management actions
-- Push from mobile web via share target
+- iOS app build
 
 ## Supported Platforms
 
@@ -64,21 +107,139 @@ flowchart LR
 
 Do not expect support for DRM-locked services — see [Limitations](#limitations).
 
+---
+
+## For Developers / Contributors
+
+Everything in this section is required **only** when setting up or developing the project from source. Normal users never touch any of it — they install the released APK and extension, which ship with the Firebase configuration already baked in at build time.
+
+> **Security note:** no real Firebase API key, password, or credential belongs in this repository or this README. Local configuration files (`.env`, `config.js`) are machine-specific and gitignored or placeholder-only in the repo. The released APK and extension zip are built with the project's Firebase configuration applied **at build time**, on the maintainer's machine.
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- JDK 17 (the Gradle build does not run on newer JDKs like 26)
+- Android SDK (or Android Studio, which bundles one)
+- A [Firebase](https://console.firebase.google.com) account (free Spark plan is enough)
+- Google Chrome (for the extension)
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/aniketm112/Video-sync_Project.git
+cd Video-sync_Project/video-sync-app
+npm install
+```
+
+### 2. Firebase project setup
+
+1. Open the [Firebase console](https://console.firebase.google.com) and create a project.
+2. **Authentication → Sign-in method → enable *Email/Password*.**
+3. **Realtime Database → Create database** (choose your region; start in locked mode).
+4. **Project settings → General → Your apps → Web app (`</>`)** — copy the shown config values.
+
+### 3. App configuration (`.env`)
+
+```bash
+cd video-sync-app
+cp .env.example .env    # then fill in the values from your Firebase web app config
+```
+
+The React Native code reads these as `EXPO_PUBLIC_FIREBASE_*` variables at build time — the values get compiled into the app bundle, which is why released APKs need no user configuration.
+
+### 4. Security rules
+
+The RTDB rules in `database.rules.json` enforce per-user isolation and field validation. Deploy them once (and after edits):
+
+```bash
+npm install -g firebase-tools
+firebase login
+firebase deploy --only database
+```
+
+### 5. Extension configuration
+
+Open `video-sync-extension/config.js` and paste your Firebase `apiKey` (the other values point at this project's database — update them if you use your own project). This file is placeholder-only in git; your real key stays local.
+
+### 6. Run from source
+
+```bash
+# from video-sync-app/
+npm start        # Expo dev server; press w = web, a = Android device/emulator
+```
+
+Then load the extension: `chrome://extensions` → Developer mode → **Load unpacked** → select `video-sync-extension/` → sign in with the same account.
+
+---
+
+# Android APK
+
+The repository contains the **native Android project** (`video-sync-app/android/`) with the Gradle wrapper checked in, so any machine with JDK 17 + Android SDK can produce the APK.
+
+### Build the release APK
+
+```bash
+cd video-sync-app
+cd android
+gradlew assembleRelease        # macOS/Linux: ./gradlew assembleRelease
+```
+
+On first run Gradle downloads its distribution and dependencies, so expect a long first build; later builds are much faster.
+
+**Verified output:**
+
+```
+video-sync-app/android/app/build/outputs/apk/release/app-release.apk
+```
+
+`assembleRelease` signs with the debug keystore by default, which is fine for side-loading and testing. For Play Store distribution, create a proper upload keystore and wire it into `android/app/build.gradle`'s `signingConfigs` — never commit that keystore.
+
+Other useful variants:
+
+```bash
+gradlew assembleDebug          # debug-signed, auto-installs via expo run:android
+gradlew bundleRelease          # .aab for Google Play uploads
+```
+
+### Distribute a release
+
+Releases are published on the repo's [Releases page](https://github.com/aniketm112/Video-sync_Project/releases) with two assets:
+
+- `Video-Sync.apk` — the built release APK
+- `Video-Sync-Extension.zip` — the extension folder zipped **with the real `config.js` included** (built locally at packaging time; the repo copy keeps a placeholder)
+
+To publish one:
+
+```bash
+# build the APK (above), zip the configured extension, then:
+git tag v1.0.0 && git push origin v1.0.0
+gh release create v1.0.0 Video-Sync.apk Video-Sync-Extension.zip --title "Video Sync v1.0.0" --notes "First release"
+```
+
+(or create the release through the GitHub web UI: **Releases → Draft a new release → attach the files**). The GitHub CLI (`gh`) is not required — the web UI does the same thing.
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
 |---|---|
-| App | Expo (React Native), expo-router, TypeScript |
+| App | React Native 0.81 (TypeScript), native Android project built with Gradle |
+| Navigation | expo-router (file-based routing over React Navigation) |
 | Backend | Firebase Authentication (email/password) |
 | Database | Firebase Realtime Database (realtime listeners + REST) |
 | Extension | Chrome MV3, vanilla JS, Firebase Auth via Identity Toolkit REST API |
 | Security | RTDB rules with per-user isolation and schema validation |
 
+Android is the shipped platform today. The app code is cross-platform React Native; an iOS target can be generated with `npx expo prebuild --platform ios` when wanted.
+
 ## Architecture
 
 ```
-video-sync/
-├── video-sync-app/            Expo app (Android · iOS · web)
+Video-sync_Project/
+├── video-sync-app/            React Native app (Android · web)
+│   ├── android/               Native Android project (Gradle, wrapper committed)
+│   │   └── app/               APK module — assembleRelease builds here
 │   ├── app/
 │   │   ├── index.tsx          Landing / setup notice
 │   │   ├── (auth)/            login · signup
@@ -98,8 +259,9 @@ video-sync/
 │   ├── content.js             Page bridge (video detection)
 │   ├── platforms.js           Adapter registry (YouTube + generic)
 │   ├── popup.html/js          Auth + PUSH VIDEO UI
-│   ├── config.js              Firebase web config (paste your apiKey)
-│   └── lib/                   REST auth + RTDB writer
+│   ├── config.js              Firebase web config (placeholder in git, real key at packaging)
+│   ├── lib/                   REST auth + RTDB writer
+│   └── tools/                 detect-test.mjs, e2e-push-test.mjs (node test harnesses)
 ├── database.rules.json        RTDB security rules
 └── firebase.json              Firebase CLI config (rules deployment)
 ```
@@ -117,65 +279,11 @@ VideoSession = { platform, url, title, thumbnail, time,
                  deviceId, deviceName, createdAt, updatedAt }
 ```
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ and npm
-- A [Firebase](https://console.firebase.google.com) project (free Spark plan is enough)
-- Google Chrome (for the extension)
-
-### 1. Clone and install
-
-```bash
-git clone https://github.com/YOUR_USERNAME/Video-sync_Project.git
-cd Video-sync_Project/video-sync-app
-npm install
-```
-
-### 2. Configure Firebase
-
-1. Open the [Firebase console](https://console.firebase.google.com) and create (or open) a project.
-2. **Authentication → Sign-in method → enable *Email/Password*.**
-3. **Realtime Database → Create database** (choose your region; start in locked mode).
-4. **Project settings → General → Your apps → Web app (`</>`)** — copy the shown config values.
-5. Paste them into the env file:
-
-   ```bash
-   cd video-sync-app
-   cp .env.example .env    # then fill in the values
-   ```
-
-6. Open `video-sync-extension/config.js` and paste the same `apiKey` (the other values are pre-filled for this project's database — update them if you use your own project).
-7. Deploy the security rules once:
-
-   ```bash
-   npm install -g firebase-tools
-   firebase login
-   firebase deploy --only database
-   ```
-
-### 3. Run the app
-
-```bash
-# from video-sync-app/
-npm start          # Expo dev server
-# then press: w = web · a = Android emulator · i = iOS simulator
-# or scan the QR code with Expo Go on your phone
-```
-
-### 4. Load the extension
-
-1. Open `chrome://extensions`.
-2. Enable **Developer mode** (top right).
-3. Click **Load unpacked** and select the `video-sync-extension/` folder.
-4. Pin the extension, open its popup, and **sign up / log in** with the same account as the app.
-
 ## Usage
 
 1. Watch any video (start with YouTube).
 2. Click the Video Sync icon → review the detected video → **PUSH VIDEO**.
-3. Open the app on another device (phone, tablet, another browser) and log into the same account.
+3. Open the app on another device and log into the same account.
 4. Tap **Continue Watching** — the video opens at your saved position where the platform supports it.
 
 ## Limitations
@@ -193,16 +301,18 @@ Being honest about what's technically possible:
 - [x] Realtime Continue Watching
 - [x] Session history
 - [x] YouTube timestamp restoration
+- [x] Native Android project + release APK (Gradle)
 - [ ] More platform adapters
 - [ ] Session management (mark watched, delete)
-- [ ] Public release builds (EAS)
+- [ ] Play Store distribution with a production keystore
+- [ ] iOS app build
 
 ## Contributing
 
 PRs are welcome. Keep the scope tight: platform adapters, UI polish, and bug fixes are the best places to start.
 
 1. Fork and create a branch (`feat/my-feature`).
-2. In `video-sync-app/`, `npx tsc --noEmit` and `npx eslint .` must pass.
+2. In `video-sync-app/`, `npx tsc --noEmit` and `npx eslint .` must pass; in `video-sync-extension/`, `node tools/detect-test.mjs` must pass.
 3. Test the full flow (extension push → app receive) before submitting.
 
 ## License

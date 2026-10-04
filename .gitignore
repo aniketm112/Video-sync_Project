@@ -12,9 +12,8 @@ expo-env.d.ts
 .env.*
 !.env.example
 
-# Native build output (Expo prebuild)
+# Native iOS build output (Expo prebuild) — Android project is committed
 ios/
-android/
 
 # Logs
 *.log
