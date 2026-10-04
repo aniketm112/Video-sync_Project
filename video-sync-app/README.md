@@ -1,16 +1,22 @@
-# Video Sync — app
+# Video Sync — Android app
 
-Expo (React Native) client for Video Sync: **Continue Watching**, recent pushes, video details, and profile. Runs on Android, iOS, and web against Firebase (Authentication + Realtime Database).
+React Native client for Video Sync: **Continue Watching**, recent pushes, video details, and profile. Ships as a standalone Android APK built from the committed native Gradle project in [`android/`](android/).
 
-See the [root README](../README.md) for the full product overview, Firebase setup, and the Chrome extension.
+See the [root README](../README.md) for the product overview, the end-user install flow, and the Chrome extension.
 
-## Setup
+## Build
 
 ```bash
 npm install
-cp .env.example .env   # then paste your Firebase web config values
-npm start              # press w (web) / a (Android) / i (iOS)
+cd android
+gradlew assembleRelease    # macOS/Linux: ./gradlew assembleRelease
 ```
+
+Output: `android/app/build/outputs/apk/release/app-release.apk` — see the root README's [Android APK](../README.md#android-apk) section for signing and distribution.
+
+## Configuration
+
+All values come from your Firebase web app config (Project settings → General → Your apps → Web app). Copy `.env.example` to `.env` and fill it in — the values are embedded in the app bundle at build time. They identify, not protect, your project; access control lives in `database.rules.json`.
 
 ## Checks
 
@@ -18,9 +24,3 @@ npm start              # press w (web) / a (Android) / i (iOS)
 npx tsc --noEmit   # typecheck
 npx eslint .       # lint
 ```
-
-## Environment
-
-All values come from your Firebase web app config (Project settings → General → Your apps → Web app). `EXPO_PUBLIC_` variables are embedded in the bundle at build time — they identify, not protect, your project; access control lives in `database.rules.json`.
-
-See `.env.example` for the full list.
