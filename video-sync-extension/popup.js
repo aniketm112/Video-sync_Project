@@ -159,6 +159,21 @@ function formatTime(seconds) {
   return h > 0 ? `${h}:${m}:${s}` : `${Math.floor(seconds / 60)}:${s}`;
 }
 
+/**
+ * Transient state while the active tab is being inspected — restores the
+ * card's initial copy so "No video detected" never flashes prematurely.
+ */
+function renderDetecting() {
+  detected = null;
+  els.cardLabel.textContent = 'Detected video';
+  els.cardTitle.textContent = 'Looking for a video…';
+  els.cardMeta.textContent = '';
+  els.cardThumb.classList.remove('visible');
+  els.cardThumbFallback.classList.remove('visible');
+  els.cardNote.classList.remove('visible');
+  els.pushBtn.disabled = true;
+}
+
 function renderDetected(video) {
   detected = video;
 
@@ -196,10 +211,13 @@ function renderDetected(video) {
 }
 
 async function detectCurrentTabVideo() {
-  renderDetected(null);
+  renderDetecting();
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab?.id) return;
+  if (!tab?.id) {
+    renderDetected(null);
+    return;
+  }
 
   const askTab = async () => {
     try {
@@ -221,13 +239,20 @@ async function detectCurrentTabVideo() {
       });
       response = await askTab();
     } catch {
-      // Restricted page (chrome://, Chrome Web Store, …) — stay on the
-      // "no video detected" card.
+      // Restricted page (chrome://, Chrome Web Store, …) — explain that
+      // instead of leaving the "looking" state hanging.
+      renderDetected({ unsupported: true });
       return;
     }
   }
 
-  if (response?.ok) renderDetected(response.video);
+  if (response?.ok) {
+    renderDetected(response.video);
+  } else {
+    // No response or an errored response — show the plain no-video card
+    // rather than getting stuck on "Looking for a video…".
+    renderDetected(null);
+  }
 }
 
 /* ---------- Push ---------- */
