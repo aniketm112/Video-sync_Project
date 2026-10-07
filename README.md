@@ -32,13 +32,13 @@ Chrome extension → Firebase (Authentication + Realtime Database) → Android a
 
 ### Android (APK)
 
-[Download Video Sync for Android](https://github.com/aniketm112/Video-sync_Project/releases/download/v1.0.0/Video-Sync.apk)
+[Download Video Sync for Android](https://github.com/aniketm112/Video-sync_Project/releases/download/v1.1.0/Video-Sync.apk)
 
 Standard Android package. After the download, open the file and confirm the installation prompt. Android may ask for permission to install apps from your browser or file manager — allow it to proceed.
 
 ### Chrome Extension
 
-[Download Chrome Extension](https://github.com/aniketm112/Video-sync_Project/releases/download/v1.0.0/Video-Sync-Extension.zip)
+[Download Chrome Extension](https://github.com/aniketm112/Video-sync_Project/releases/download/v1.1.0/Video-Sync-Extension.zip)
 
 Unzip the folder, then load it in Chrome:
 
@@ -51,7 +51,7 @@ The extension ships pre-configured; sign in with your Video Sync account to star
 
 ### Release
 
-[View Release](https://github.com/aniketm112/Video-sync_Project/releases/tag/v1.0.0)
+[View Release](https://github.com/aniketm112/Video-sync_Project/releases/tag/v1.1.0)
 
 ## Getting Started
 
