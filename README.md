@@ -248,3 +248,5 @@ All rights reserved. No open-source license has been granted at this time.
 ## Screenshots / Demo
 
 Screenshots and demo materials will be added in a future update.
+<img width="720" height="1600" alt="WhatsApp Image 2026-10-07 at 11 49 56 PM" src="https://github.com/user-attachments/assets/5622204c-32c5-4d32-8da7-b4d59995ede9" />
+
