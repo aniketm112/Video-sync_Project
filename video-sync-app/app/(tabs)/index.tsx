@@ -1,9 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Image } from 'expo-image';
-import { Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/lib/auth';
-import { subscribeHistory, subscribeLatest, type VideoSession } from '@/lib/db';
+import {
+  getRawSession,
+  removeHistorySession,
+  restoreHistorySession,
+  subscribeHistory,
+  subscribeLatest,
+  type VideoSession,
+} from '@/lib/db';
 import { continueUrl, platformLabel, supportsTimestampRestore } from '@/lib/platforms';
 import { formatDuration, timeAgo } from '@/lib/format';
 import { Button } from '@/components/ui/button';
@@ -16,6 +23,8 @@ export default function Home() {
   const [latest, setLatest] = useState<VideoSession | null>(null);
   const [history, setHistory] = useState<VideoSession[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [snackbar, setSnackbar] = useState<{ message: string; undo?: () => void } | null>(null);
+  const snackbarTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -30,6 +39,38 @@ export default function Home() {
       unsubHistory();
     };
   }, [user]);
+
+  useEffect(() => {
+    return () => {
+      if (snackbarTimer.current) clearTimeout(snackbarTimer.current);
+    };
+  }, []);
+
+  const showSnackbar = useCallback((message: string, undo?: () => void) => {
+    if (snackbarTimer.current) clearTimeout(snackbarTimer.current);
+    setSnackbar({ message, undo });
+    snackbarTimer.current = setTimeout(() => setSnackbar(null), 5000);
+  }, []);
+
+  const deleteHistory = useCallback(
+    async (session: VideoSession) => {
+      if (!user) return;
+      const id = session.id;
+      if (!id) return;
+      try {
+        // Capture the exact stored record first so UNDO can restore it unmodified.
+        const raw = await getRawSession(user.uid, id);
+        if (!raw) return; // Record already gone (e.g. pushed from another device).
+        await removeHistorySession(user.uid, id);
+        showSnackbar('Video removed', () => {
+          void restoreHistorySession(user.uid, id, raw);
+        });
+      } catch {
+        showSnackbar('Could not remove video');
+      }
+    },
+    [user, showSnackbar]
+  );
 
   // `user` is guaranteed by the root layout guard; keeps TS happy.
   if (!user) return null;
@@ -119,12 +160,24 @@ export default function Home() {
             key={session.id ?? session.url}
             session={session}
             onPress={() => router.push(`/video/${session.id}`)}
+            onLongPress={() => deleteHistory(session)}
           />
         ))}
         {loaded && history.length === 0 && (
           <Text style={styles.listEmpty}>Your pushed videos will show up here.</Text>
         )}
       </View>
+
+      {snackbar && (
+        <View style={styles.snackbar} pointerEvents="box-none">
+          <Text style={styles.snackbarText}>{snackbar.message}</Text>
+          {snackbar.undo && (
+            <Pressable onPress={snackbar.undo} hitSlop={8}>
+              <Text style={styles.snackbarAction}>UNDO</Text>
+            </Pressable>
+          )}
+        </View>
+      )}
     </ScrollView>
   );
 }
@@ -281,5 +334,30 @@ const styles = StyleSheet.create({
   listEmpty: {
     color: Brand.faint,
     fontSize: 13.5,
+  },
+  snackbar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 16,
+    alignSelf: 'stretch',
+    backgroundColor: Brand.surfaceRaised,
+    borderColor: Brand.border,
+    borderWidth: 1,
+    borderRadius: Brand.radiusSm,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginTop: 18,
+  },
+  snackbarText: {
+    color: Brand.text,
+    fontSize: 13.5,
+    fontWeight: '500',
+  },
+  snackbarAction: {
+    color: Brand.accent,
+    fontSize: 13,
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
 });

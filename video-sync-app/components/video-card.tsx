@@ -9,15 +9,18 @@ import type { VideoSession } from '@/lib/db';
 type VideoCardProps = {
   session: VideoSession;
   onPress?: () => void;
+  onLongPress?: () => void;
   compact?: boolean;
 };
 
-export function VideoCard({ session, onPress, compact = false }: VideoCardProps) {
+export function VideoCard({ session, onPress, onLongPress, compact = false }: VideoCardProps) {
   return (
     <Pressable
       accessibilityRole="button"
       onPress={onPress}
-      disabled={!onPress}
+      onLongPress={onLongPress}
+      disabled={!onPress && !onLongPress}
+      delayLongPress={2000}
       style={({ pressed }) => [styles.card, compact && styles.cardCompact, pressed && styles.pressed]}>
       <View style={styles.thumbWrap}>
         {session.thumbnail ? (

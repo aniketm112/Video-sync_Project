@@ -1,4 +1,4 @@
-import { get, onValue, ref, update } from 'firebase/database';
+import { get, onValue, ref, remove, set, update } from 'firebase/database';
 import type { User } from 'firebase/auth';
 import { db } from './firebase';
 import { detectPlatform, thumbnailForUrl } from './platforms';
@@ -177,4 +177,30 @@ export async function getSession(uid: string, id: string): Promise<VideoSession 
   if (!db) return null;
   const snap = await get(ref(db, `users/${uid}/sessions/${id}`));
   return normalizeSession(snap.val() as Record<string, unknown> | null, id);
+}
+
+/** Reads the raw stored record for one history session, with all original fields. */
+export async function getRawSession(
+  uid: string,
+  id: string
+): Promise<Record<string, unknown> | null> {
+  if (!db) return null;
+  const snap = await get(ref(db, `users/${uid}/sessions/${id}`));
+  return (snap.val() as Record<string, unknown> | null) ?? null;
+}
+
+/** Removes one history session record (`users/{uid}/sessions/{pushId}`). */
+export async function removeHistorySession(uid: string, id: string): Promise<void> {
+  if (!db) return;
+  await remove(ref(db, `users/${uid}/sessions/${id}`));
+}
+
+/** Restores a previously deleted history record under its original pushId. */
+export async function restoreHistorySession(
+  uid: string,
+  id: string,
+  raw: Record<string, unknown>
+): Promise<void> {
+  if (!db) return;
+  await set(ref(db, `users/${uid}/sessions/${id}`), raw);
 }
