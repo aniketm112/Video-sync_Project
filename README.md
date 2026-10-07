@@ -2,57 +2,29 @@
 
 > Cross-device video handoff: push what you're watching — with your exact position — from your browser, and continue on your phone in one tap.
 
-**For Users:** install the Android app, install the Chrome extension, sign in with the same account on both — done. The app is a standalone APK: you don't need Expo, Node.js, or any build tools, and there is no Firebase project to create or configure. Everything is already set up inside the app.
+**For Users:** everything you need is in the [Download](#download) section below — install the Android app, install the Chrome extension, sign in with the same account on both. The app is a standalone APK: you don't need Expo, Node.js, or any build tools, and there is no Firebase project to create or configure. Everything is already set up inside the app.
 
 **For Developers:** everything you need to build Video Sync from source is in the [developer section](#for-developers--contributors) below.
 
 ---
 
-## For Users
+## Download
 
 Video Sync does one thing well: you're 32:47 into a video on your laptop, and later you finish it on your phone at exactly 32:47.
 
 The flow: **YouTube → Chrome extension → PUSH VIDEO → Video Sync app → Continue Watching**
 
-### 1. Download Video Sync
+### Android
 
-Download the latest `Video-Sync.apk` from the project's [Releases page](https://github.com/aniketm112/Video-sync_Project/releases).
+1. **Open the latest GitHub Release** — go to the [Releases page](https://github.com/aniketm112/Video-sync_Project/releases/latest).
+2. **Download `Video-Sync.apk`** from the release's Assets. (You can also grab `Video-Sync-Extension.zip` from the same release for step 5.)
+3. **Install the APK** on your Android phone or tablet: open the downloaded file, and if Android asks for permission to install apps from your browser or file manager, tap **Allow** — this is normal for apps installed outside the Play Store. Then tap **Install** → **Open**.
+4. **Create or sign into your Video Sync account** in the app (name, email, password). Firebase Authentication is built in — you never enter server settings, keys, or configuration, and you never create your own Firebase project. Use the **same account on every device** — that's what keeps your videos in sync.
+5. **Install the Chrome extension on your computer**: unzip `Video-Sync-Extension.zip`, open `chrome://extensions`, turn on **Developer mode** (top-right toggle), click **Load unpacked**, and select the unzipped folder. Pin the Video Sync icon to your toolbar.
+6. **Sign into the same account** in the Video Sync extension popup. The released extension is pre-configured — there is no setup beyond signing in.
+7. **Push a video and continue watching it on your phone**: watch any YouTube video in Chrome, click the Video Sync icon → check the detected video → **PUSH VIDEO**. It appears instantly under **Continue Watching** in the app — tap it and YouTube opens at your saved position.
 
-### 2. Install the APK
-
-On your Android phone or tablet:
-
-1. Download the APK (or copy it over from your computer).
-2. Open the APK from your notification shade or file manager.
-3. If Android asks for permission to install apps from that source (your browser or file manager), tap **Allow** — this is normal for apps installed outside the Play Store.
-4. Tap **Install**, then **Open**.
-
-### 3. Create an account
-
-Open Video Sync and create an account with a **name, email, and password**. Firebase Authentication is already integrated into the application — the app connects to the Video Sync backend on its own. You never enter server settings, keys, or configuration, and you never create your own Firebase project.
-
-Use the **same account on every device** — that's what keeps your videos in sync.
-
-### 4. Install the Chrome extension
-
-The Chrome extension is what pushes videos from YouTube (and other sites) to your account. It is not on the Chrome Web Store, so you install it directly:
-
-1. Download `Video-Sync-Extension.zip` from the same [Releases page](https://github.com/aniketm112/Video-sync_Project/releases) and unzip it.
-2. In Chrome, open `chrome://extensions`.
-3. Turn on **Developer mode** (top-right toggle).
-4. Click **Load unpacked** and select the unzipped folder.
-5. Pin the Video Sync icon to your toolbar.
-
-The released extension is pre-configured — just sign in with the same account you use in the app.
-
-### 5. Start syncing
-
-1. Open any YouTube video in Chrome and watch it for a bit.
-2. Click the Video Sync icon → check the detected video → click **PUSH VIDEO**.
-3. Open Video Sync on your phone — the video appears instantly under **Continue Watching**.
-4. Tap it — YouTube opens at your saved position.
-
-Everything you push syncs automatically to every device signed into your account. The app updates in real time; no refresh needed.
+That's the entire setup. Everything you push syncs automatically to every device signed into your account, in real time — no refresh needed. You never need Expo Go, the Expo CLI, Node.js, Android Studio, or any Firebase configuration: all of that ships inside `Video-Sync.apk` and `Video-Sync-Extension.zip`.
 
 ---
 
