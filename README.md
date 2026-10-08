@@ -80,6 +80,7 @@ Unzip the folder, then load it in Chrome:
 4. Pin the Video Sync icon to your toolbar
 
 The extension is pre-configured and ready to use. Sign in with your Video Sync account to start pushing videos.
+
 **Chrome Web Store**: Coming soon.
 
 ### Release
