@@ -277,4 +277,6 @@ Contributions are welcome. Useful areas: platform adapters, UI polish, and bug f
 
 ## License
 
-All rights reserved. No open-source license has been granted at this time.
+**All rights reserved.**
+
+The source code is publicly available for viewing and educational reference only. You may not copy, modify, distribute, publish, or use this project or any part of it commercially without prior written permission from the author.
