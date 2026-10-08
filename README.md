@@ -28,6 +28,38 @@ Chrome extension → Firebase (Authentication + Realtime Database) → Android a
 - **Profile and device registration** — account information, registered devices, and sign-out
 - **Secure per-user data isolation** — database rules restrict every read and write to the account owner
 
+## Screenshots / Demo
+
+### Chrome Extension
+
+The Chrome extension detects the current video and lets you push it to your Video Sync account with one click.
+
+<table>
+  <tr>
+    <td align="center" valign="top">
+      <img height="360" alt="Video Sync Chrome Extension" src="https://github.com/user-attachments/assets/98a67314-4fac-4e35-8540-63badab30595" />
+    </td>
+    <td align="center" valign="top">
+      <img height="360" alt="Video Sync Chrome Extension on YouTube" src="https://github.com/user-attachments/assets/3889299d-34e5-4d88-9f03-d780d3bdefcc" />
+    </td>
+  </tr>
+</table>
+
+### Android App — Continue Watching
+
+The Android app receives the pushed video in real time and lets you continue from the saved playback position.
+
+<table>
+  <tr>
+    <td align="center" valign="top">
+      <img height="500" alt="Video Sync Android Home" src="https://github.com/user-attachments/assets/13c9adc6-09c1-4da5-a549-91da21151bc4" />
+    </td>
+    <td align="center" valign="top">
+      <img height="500" alt="Video Sync Android Profile" src="https://github.com/user-attachments/assets/68c53d45-93b9-4e5a-9abc-dfabc2f03e18" />
+    </td>
+  </tr>
+</table>
+
 ## Download
 
 ### Android (APK)
@@ -47,7 +79,7 @@ Unzip the folder, then load it in Chrome:
 3. Click **Load unpacked** and select the unzipped folder
 4. Pin the Video Sync icon to your toolbar
 
-The extension ships pre-configured; sign in with your Video Sync account to start pushing videos.
+The extension is pre-configured and ready to use. Sign in with your Video Sync account to start pushing videos.
 
 ### Release
 
@@ -223,14 +255,14 @@ A video session record contains: platform, url, title, thumbnail, time (playback
 | Extension | Chrome Manifest V3 |
 | Security | Firebase Realtime Database security rules |
 
-Android is the currently shipped platform. The codebase is cross-platform React Native; an iOS build is planned (see Roadmap).
+**Platform status:** Android is currently available. The codebase is cross-platform React Native; an iOS build is planned and requires a macOS/Xcode build environment.
 
 ## Roadmap
 
 - Additional platform adapters
-- Session management (mark as watched, delete)
+- Session management improvements
 - Play Store distribution with a production keystore
-- iOS build
+- iOS build and TestFlight release
 - Push confirmation sync-back to the extension
 
 ## Contributing
@@ -244,32 +276,3 @@ Contributions are welcome. Useful areas: platform adapters, UI polish, and bug f
 ## License
 
 All rights reserved. No open-source license has been granted at this time.
-
-### Chrome Extension
-
-The Chrome extension detects the current video and lets you push it to your Video Sync account with one click.
-
-<table>
-  <tr>
-    <td align="center" valign="top">
-      <img height="360" alt="Video Sync Chrome Extension" src="https://github.com/user-attachments/assets/98a67314-4fac-4e35-8540-63badab30595" />
-    </td>
-    <td align="center" valign="top">
-      <img height="360" alt="Video Sync Chrome Extension on YouTube" src="https://github.com/user-attachments/assets/3889299d-34e5-4d88-9f03-d780d3bdefcc" />
-    </td>
-  </tr>
-</table>
-### Android App — Continue Watching
-
-The Android app receives the pushed video in real time and lets you continue from the saved playback position.
-
-<table>
-  <tr>
-    <td align="center">
-      <img height="500" alt="Video Sync Android Home" src="https://github.com/user-attachments/assets/13c9adc6-09c1-4da5-a549-91da21151bc4" />
-    </td>
-    <td align="center">
-      <img height="500" alt="Video Sync Android Profile" src="https://github.com/user-attachments/assets/68c53d45-93b9-4e5a-9abc-dfabc2f03e18" />
-    </td>
-  </tr>
-</table>
