@@ -249,10 +249,16 @@ All rights reserved. No open-source license has been granted at this time.
 
 The Chrome extension detects the current video and lets you push it to your Video Sync account with one click.
 
-<img width="320" height="449" alt="Video Sync Chrome Extension" src="https://github.com/user-attachments/assets/98a67314-4fac-4e35-8540-63badab30595" />
-
-<img width="1200" height="646" alt="Video Sync Chrome Extension on YouTube" src="https://github.com/user-attachments/assets/3889299d-34e5-4d88-9f03-d780d3bdefcc" />
-
+<table>
+  <tr>
+    <td align="center" valign="top">
+      <img height="360" alt="Video Sync Chrome Extension" src="https://github.com/user-attachments/assets/98a67314-4fac-4e35-8540-63badab30595" />
+    </td>
+    <td align="center" valign="top">
+      <img height="360" alt="Video Sync Chrome Extension on YouTube" src="https://github.com/user-attachments/assets/3889299d-34e5-4d88-9f03-d780d3bdefcc" />
+    </td>
+  </tr>
+</table>
 ### Android App — Continue Watching
 
 The Android app receives the pushed video in real time and lets you continue from the saved playback position.
