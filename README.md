@@ -247,4 +247,23 @@ All rights reserved. No open-source license has been granted at this time.
 
 ## Screenshots / Demo
 
-Screenshots and demo materials will be added in a future update.
+### Chrome Extension
+
+The Chrome extension detects the current video and lets you push it to your Video Sync account with one click.
+
+<img width="380" height="533" alt="Screenshot 2026-10-08 122903" src="https://github.com/user-attachments/assets/98a67314-4fac-4e35-8540-63badab30595" />
+<img width="1507" height="811" alt="Screenshot 2026-10-08 122850" src="https://github.com/user-attachments/assets/3889299d-34e5-4d88-9f03-d780d3bdefcc" />
+
+
+### Android App — Continue Watching
+
+The Android app receives the pushed video in real time and lets you continue from the saved playback position.
+
+<img width="758" height="1599" alt="WhatsApp Image 2026-10-08 at 12 27 23 PM (1)" src="https://github.com/user-attachments/assets/13c9adc6-09c1-4da5-a549-91da21151bc4" />
+
+
+### Android App — Profile & Devices
+
+View your account and devices connected to your Video Sync account.
+
+<img width="763" height="1600" alt="WhatsApp Image 2026-10-08 at 12 27 23 PM" src="https://github.com/user-attachments/assets/68c53d45-93b9-4e5a-9abc-dfabc2f03e18" />
