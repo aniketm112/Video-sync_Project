@@ -263,10 +263,13 @@ The Chrome extension detects the current video and lets you push it to your Vide
 
 The Android app receives the pushed video in real time and lets you continue from the saved playback position.
 
-<img width="390" height="822" alt="Video Sync Android Home" src="https://github.com/user-attachments/assets/13c9adc6-09c1-4da5-a549-91da21151bc4" />
-
-### Android App — Profile & Devices
-
-View your account and devices connected to your Video Sync account.
-
-<img width="390" height="818" alt="Video Sync Android Profile" src="https://github.com/user-attachments/assets/68c53d45-93b9-4e5a-9abc-dfabc2f03e18" />
+<table>
+  <tr>
+    <td align="center">
+      <img height="500" alt="Video Sync Android Home" src="https://github.com/user-attachments/assets/13c9adc6-09c1-4da5-a549-91da21151bc4" />
+    </td>
+    <td align="center">
+      <img height="500" alt="Video Sync Android Profile" src="https://github.com/user-attachments/assets/68c53d45-93b9-4e5a-9abc-dfabc2f03e18" />
+    </td>
+  </tr>
+</table>
